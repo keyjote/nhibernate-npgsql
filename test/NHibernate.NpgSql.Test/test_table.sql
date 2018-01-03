@@ -6,6 +6,8 @@
     json_field json,
     jsonb_field jsonb,
     update_time timestamp without time zone,
+    att_json json, 
+    att_jsonb jsonb, 
     CONSTRAINT pk_test_table PRIMARY KEY (id)
 )
 WITH (

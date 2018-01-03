@@ -15,6 +15,19 @@ namespace Beginor.NHibernate.NpgSql.Test.Data {
         public virtual string JsonbField { get; set; }
 
         public virtual DateTime UpdateTime { get; set; }
+
+        public virtual EntityAttributes Attributes { get; set; }
+
+        public virtual EntityAttributes Battributes { get; set; }
     }
 
+    public class EntityAttributes {
+        public string Name { get; set; }
+        public int Age { get; set; }
+        public bool IsDead { get; set; }
+    }
+
+    public class EntityAttributesNhJson : JsonObjectType<EntityAttributes> { }
+
+    public class EntityBattributesNhJson : JsonObjectType<EntityAttributes> { }
 }
