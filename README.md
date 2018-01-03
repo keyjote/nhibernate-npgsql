@@ -1,7 +1,9 @@
 # Beginor.NHibernate.NpgSql
 
 NHibernate Extension for supporting of PostgreSQL's `json`, `jsonb` and
-`string[]` field.
+`string[]` field.  
+The `json` is for mapping it to a string as well as to defined class.
+
 
 ## Usage
 
@@ -33,6 +35,7 @@ NHibernate Extension for supporting of PostgreSQL's `json`, `jsonb` and
 
     <typedef name="npgJson" class="Beginor.NHibernate.NpgSql.JsonType, Beginor.NHibernate.NpgSql" />
     <typedef name="npgJsonb" class="Beginor.NHibernate.NpgSql.JsonbType, Beginor.NHibernate.NpgSql" />
+    <typedef name="npgStringArray" class="Beginor.NHibernate.NpgSql.StringArrayType, Beginor.NHibernate.NpgSql" />
     <typedef name="npgStringArray" class="Beginor.NHibernate.NpgSql.StringArrayType, Beginor.NHibernate.NpgSql" />
 
 </hibernate-mapping>
@@ -80,4 +83,51 @@ namespace Beginor.NHibernate.NpgSql.Test.Data {
 }
 ```
 
-Done !
+### 4. Done !
+
+## Usage for mapping an object to a json column
+
+### 1. Same as above
+
+### 2. Create class which inherits from JsonObjectType<T>
+
+You need to have an existing class which describes the json in the database column. In this case I will cal it EntityAttributes
+```cs
+    public class EntityAttributesNhJson : JsonObjectType<EntityAttributes> { }
+```
+
+### 3. Reference the types needed to mapping file and use theme in mapping file
+
+`TestEntity.hbm.xml`
+
+```xml
+<?xml version="1.0" encoding="UTF-8" ?>
+<hibernate-mapping
+...
+    <typedef name="attJson" class="Beginor.NHibernate.NpgSql.Test.Data.EntityAttributesNhJson, Beginor.NHibernate.NpgSql.Test" />
+...
+
+    <class name="TestEntity" table="test_table" schema="public">
+...
+        <property name="Attributes" column="att_att" type="attJson" />
+    </class>
+</hibernate-mapping
+```
+
+Update `TestEntity` to something like:
+
+```cs
+namespace Beginor.NHibernate.NpgSql.Test.Data {
+
+    public class TestEntity {
+
+...
+
+        public virtual EntityAttributes Attributes { get; set; }
+
+    }
+
+}
+```
+
+### 4. Done !

@@ -27,8 +27,9 @@ namespace Beginor.NHibernate.NpgSql.Test {
         [Test]
         public void CanDoCrud() {
             using (var session = factory.OpenSession()) {
+                var random = new Random(100);
                 var entity = new TestEntity {
-                    Name = "Test 1",
+                    Name = "Test " + random.Next(),
                     Tags = new string[] { "hello", "world" },
                     JsonField = "{ \"val\": 1 }",
                     JsonbField = "{ \"val\": 1 }",
@@ -38,7 +39,8 @@ namespace Beginor.NHibernate.NpgSql.Test {
                     Int64Arr = new long[] { 1L, 2L, 3L },
                     FloatArr = new float[] { 1.1F, 2.2F, 3.3F },
                     DoubleArr = new double[] { 1.1, 2.2, 3.3 },
-                    BooleanArr = new bool[] { true, false }
+                    BooleanArr = new bool[] { true, false },
+                    Attributes = new EntityAttributes() { Age = 37, IsDead = false, Name = "Yonny"}
                 };
 
                 session.Save(entity);
@@ -48,6 +50,7 @@ namespace Beginor.NHibernate.NpgSql.Test {
                 Assert.Greater(entity.Id, 0);
 
                 Console.WriteLine($"entity id: {entity.Id}");
+                Console.WriteLine($"entity Attribute: {entity.Attributes.Name} ({entity.Attributes.Age})");
 
                 var query = session.Query<TestEntity>();
                 var entities = query.ToList();
@@ -59,6 +62,55 @@ namespace Beginor.NHibernate.NpgSql.Test {
 
                 session.Flush();
 
+            }
+        }
+
+        [Test]
+        public void DoAdd() {
+            using (var session = factory.OpenSession()) {
+                var random = new Random(100);
+                var entity = new TestEntity {
+                    Name = "Test " + random.Next(100),
+                    Tags = new string[] { "hello", "world" },
+                    JsonField = "{ \"val\": 1 }",
+                    JsonbField = "{ \"val\": 1 }",
+                    UpdateTime = DateTime.Now,
+                    Int16Arr = new short[] { 1, 2, 3 },
+                    Int32Arr = new int[] { 1, 2, 3 },
+                    Int64Arr = new long[] { 1L, 2L, 3L },
+                    FloatArr = new float[] { 1.1F, 2.2F, 3.3F },
+                    DoubleArr = new double[] { 1.1, 2.2, 3.3 },
+                    BooleanArr = new bool[] { true, false },
+                    Attributes = new EntityAttributes() { Age = random.Next(75), IsDead = false, Name = "Yonny"}
+                };
+
+                session.Save(entity);
+                session.Flush();
+                session.Clear();
+
+                Assert.Greater(entity.Id, 0);
+
+                Console.WriteLine($"entity id: {entity.Id}");
+                Console.WriteLine($"entity Attribute: {entity.Attributes.Name} ({entity.Attributes.Age})");
+            }
+        }
+
+        [Test]
+        public void Read() {
+            using (var session = factory.OpenSession()) {
+                var query = session.Query<TestEntity>();
+                var entities = query.ToList();
+
+                Assert.NotNull(entities);
+                Assert.That(entities.Count, Is.GreaterThan(0));
+                foreach (var testEntity in entities) {
+                    Assert.That(testEntity.Id, Is.GreaterThan(0));
+                    Assert.That(testEntity.JsonField, Is.Not.Empty);
+                    Assert.That(testEntity.JsonbField, Is.Not.Empty);
+                    Assert.That(testEntity.Attributes.Age, Is.GreaterThan(0));
+                    Assert.That(testEntity.Attributes.IsDead, Is.False);
+                    Assert.That(testEntity.Attributes.Name, Is.Not.Empty);
+                }
             }
         }
 

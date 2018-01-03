@@ -16,6 +16,7 @@ CREATE TABLE public.test_table
     real_arr real[],
     double_arr double precision[],
     bool_arr boolean[],
+    att_att json,
     CONSTRAINT pk_test_table PRIMARY KEY (id)
 )
 WITH (

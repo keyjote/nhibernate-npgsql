@@ -28,6 +28,14 @@ namespace Beginor.NHibernate.NpgSql.Test.Data {
 
         public virtual bool[] BooleanArr { get; set; }
 
+        public virtual EntityAttributes Attributes { get; set; }
     }
 
+    public class EntityAttributes {
+        public string Name { get; set; }
+        public int Age { get; set; }
+        public bool IsDead { get; set; }
+    }
+
+    public class EntityAttributesNhJson : JsonObjectType<EntityAttributes> { }
 }

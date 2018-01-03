@@ -1,6 +1,8 @@
 *.user
 *.userprefs
 *.nupkg
+.vs
+packages
 bin
 obj
 .idea
