@@ -26,8 +26,9 @@ namespace Beginor.NHibernate.NpgSql.Test {
 
         [Test]
         public void CanDoCrud() {
+            var random = new Random(100);
+            var attEntity = new EntityAttributes() {Age = random.Next(75), IsDead = false, Name = "Yonny"};
             using (var session = factory.OpenSession()) {
-                var random = new Random(100);
                 var entity = new TestEntity {
                     Name = "Test " + random.Next(),
                     Tags = new string[] { "hello", "world" },
@@ -40,7 +41,8 @@ namespace Beginor.NHibernate.NpgSql.Test {
                     FloatArr = new float[] { 1.1F, 2.2F, 3.3F },
                     DoubleArr = new double[] { 1.1, 2.2, 3.3 },
                     BooleanArr = new bool[] { true, false },
-                    Attributes = new EntityAttributes() { Age = 37, IsDead = false, Name = "Yonny"}
+                    Attributes = attEntity,
+                    Battributes = attEntity
                 };
 
                 session.Save(entity);
@@ -51,6 +53,7 @@ namespace Beginor.NHibernate.NpgSql.Test {
 
                 Console.WriteLine($"entity id: {entity.Id}");
                 Console.WriteLine($"entity Attribute: {entity.Attributes.Name} ({entity.Attributes.Age})");
+                Console.WriteLine($"entity Battribute: {entity.Battributes.Name} ({entity.Battributes.Age})");
 
                 var query = session.Query<TestEntity>();
                 var entities = query.ToList();
@@ -67,8 +70,9 @@ namespace Beginor.NHibernate.NpgSql.Test {
 
         [Test]
         public void DoAdd() {
+            var random = new Random(100);
+            var attEntity = new EntityAttributes() {Age = random.Next(75), IsDead = false, Name = "Yonny"};
             using (var session = factory.OpenSession()) {
-                var random = new Random(100);
                 var entity = new TestEntity {
                     Name = "Test " + random.Next(100),
                     Tags = new string[] { "hello", "world" },
@@ -81,7 +85,8 @@ namespace Beginor.NHibernate.NpgSql.Test {
                     FloatArr = new float[] { 1.1F, 2.2F, 3.3F },
                     DoubleArr = new double[] { 1.1, 2.2, 3.3 },
                     BooleanArr = new bool[] { true, false },
-                    Attributes = new EntityAttributes() { Age = random.Next(75), IsDead = false, Name = "Yonny"}
+                    Attributes = attEntity,
+                    Battributes = attEntity
                 };
 
                 session.Save(entity);
@@ -92,6 +97,7 @@ namespace Beginor.NHibernate.NpgSql.Test {
 
                 Console.WriteLine($"entity id: {entity.Id}");
                 Console.WriteLine($"entity Attribute: {entity.Attributes.Name} ({entity.Attributes.Age})");
+                Console.WriteLine($"entity Battribute: {entity.Battributes.Name} ({entity.Battributes.Age})");
             }
         }
 
@@ -110,6 +116,9 @@ namespace Beginor.NHibernate.NpgSql.Test {
                     Assert.That(testEntity.Attributes.Age, Is.GreaterThan(0));
                     Assert.That(testEntity.Attributes.IsDead, Is.False);
                     Assert.That(testEntity.Attributes.Name, Is.Not.Empty);
+                    Assert.That(testEntity.Attributes.Age, Is.EqualTo(testEntity.Battributes.Age));
+                    Assert.That(testEntity.Attributes.IsDead, Is.EqualTo(testEntity.Battributes.IsDead));
+                    Assert.That(testEntity.Attributes.Name, Is.EqualTo(testEntity.Battributes.Name));
                 }
             }
         }

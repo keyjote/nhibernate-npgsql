@@ -2,7 +2,8 @@
 
 NHibernate Extension for supporting of PostgreSQL's `json`, `jsonb` and
 `string[]` field.  
-The `json` is for mapping it to a string as well as to defined class.
+The `json` and `jsonb` can be mapped a string properties (`JsonType` and `JsonbType`) 
+as well as to locally defined class properties (`JsonObjectType` and `JsonbObjectType`).
 
 
 ## Usage
@@ -89,11 +90,13 @@ namespace Beginor.NHibernate.NpgSql.Test.Data {
 
 ### 1. Same as above
 
-### 2. Create class which inherits from JsonObjectType<T>
+### 2. Create class which inherits from JsonObjectType<T> and JsonbObjectType<T>
 
 You need to have an existing class which describes the json in the database column. In this case I will cal it EntityAttributes
 ```cs
     public class EntityAttributesNhJson : JsonObjectType<EntityAttributes> { }
+
+    public class EntityBattributesNhJson : JsonbObjectType<EntityAttributes> { }
 ```
 
 ### 3. Reference the types needed to mapping file and use theme in mapping file
@@ -105,11 +108,13 @@ You need to have an existing class which describes the json in the database colu
 <hibernate-mapping
 ...
     <typedef name="attJson" class="Beginor.NHibernate.NpgSql.Test.Data.EntityAttributesNhJson, Beginor.NHibernate.NpgSql.Test" />
+    <typedef name="attJsonb" class="Beginor.NHibernate.NpgSql.Test.Data.EntityBattributesNhJson, Beginor.NHibernate.NpgSql.Test" />
 ...
 
     <class name="TestEntity" table="test_table" schema="public">
 ...
-        <property name="Attributes" column="att_att" type="attJson" />
+        <property name="Attributes" column="att_json" type="attJson" />
+        <property name="Battributes" column="att_jsonb" type="attJsonb" />
     </class>
 </hibernate-mapping
 ```
@@ -124,6 +129,8 @@ namespace Beginor.NHibernate.NpgSql.Test.Data {
 ...
 
         public virtual EntityAttributes Attributes { get; set; }
+
+        public virtual EntityAttributes Battributes { get; set; }
 
     }
 
